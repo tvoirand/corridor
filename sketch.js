@@ -53,6 +53,9 @@ function circle_equation(radius, t){
 
 class Square{
 
+    static size_min = 5;
+    static size_max = Math.max(canvas_width, canvas_height);
+
     constructor(side, angle, center){
         this.side = side;
         this.angle = angle;
@@ -84,8 +87,6 @@ class Square{
 class Corridor{
 
     constructor(){
-        this.size_min = 5;
-        this.size_max = 400;
         this.velocity = 1.1;
         this.rotational_velocity = 0.01;
         this.period= 3;
@@ -105,14 +106,14 @@ class Corridor{
         // insert new frames periodically
         if (elapsed_time % this.period == 0){
             this.frames.push(new Square(
-                this.size_min,
+                Square.size_min,
                 elapsed_time * this.rotational_velocity,
                 circle_equation(50, elapsed_time * 0.05)
             ));
         }
 
         // get rid of first frame if larger than max size
-        if (this.frames[0].side > this.size_max){
+        if (this.frames[0].side > Square.size_max){
             this.frames.shift();
         }
 
