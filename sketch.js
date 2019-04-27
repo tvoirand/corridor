@@ -2,6 +2,10 @@
 Processing.js tryouts
 */
 
+// global variables
+let canvas_width = 800;
+let canvas_height = 600;
+
 function point_rotation(input, angle){
     /*
     Apply rotation around center to XY coordinates.
@@ -53,7 +57,6 @@ class Square{
         this.side = side;
         this.angle = angle;
         this.center = center;
-
     }
 
     display(){
@@ -132,7 +135,7 @@ function setup() {
     Processing setup function.
     Called one time at start.
     */
-    createCanvas(800, 600);
+    createCanvas(canvas_width, canvas_height);
     stroke(255);
     frameRate(30);
 }
