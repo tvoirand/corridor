@@ -1,0 +1,6 @@
+Changelog for Corridor.
+
+-------------------------------------------------------------------------------
+20190427
+    -added Square static variables
+    -added Trajectory class

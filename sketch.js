@@ -36,27 +36,61 @@ function point_translation(input, vector){
     ]
 }
 
-function circle_equation(radius, t){
-    /*
-    Circle equation.
-    Input:
-        -radius
-        -t
-    Output:
-        -output     X, Y coordinates
-    */
-    return [
-        radius * Math.cos(t),
-        radius * Math.sin(t)
-    ]
+class Trajectory{
+
+    constructor(type, start_point, start_time){
+        /*
+        Input:
+            -type           str
+                just circle for now
+            -start_point    [X, Y]
+            -start_time     float
+        */
+
+        this.type = type;
+        this.start_point = start_point;
+        this.start_time = start_time;
+
+        if (this.type = `circle`){
+            this.radius = Math.sqrt(
+                Math.pow(start_point[0], 2) + Math.pow(start_point[1], 2)
+            );
+        }
+
+    }
+
+    compute_new_point(elapsed_time){
+        /*
+        Input:
+            -elapsed_time
+        Output:
+            -new_point      [X, Y]
+        */
+
+        if (this.type == `circle`){
+            return [
+                this.radius * Math.cos(elapsed_time*0.05 - this.start_time),
+                this.radius * Math.sin(elapsed_time*0.05 - this.start_time)
+            ]
+        }
+
+    }
+
 }
 
 class Square{
 
     static size_min = 5;
-    static size_max = Math.max(canvas_width, canvas_height);
+    static size_max = Math.sqrt(2) * Math.max(canvas_width, canvas_height);
 
     constructor(side, angle, center){
+        /*
+        Input:
+            -side
+            -angle
+            -center     [X, Y]
+        */
+
         this.side = side;
         this.angle = angle;
         this.center = center;
@@ -91,9 +125,13 @@ class Corridor{
         this.rotational_velocity = 0.01;
         this.period= 3;
         this.frames = [];
+        this.trajectory = new Trajectory(`circle`, [50, 0], 0);
     }
 
     update(elapsed_time){
+        /*
+        Enlarge each frame, insert new small frames and remove large frames.
+        */
 
         // update each frame
         for (let i = 0; i < this.frames.length; i++){
@@ -108,7 +146,7 @@ class Corridor{
             this.frames.push(new Square(
                 Square.size_min,
                 elapsed_time * this.rotational_velocity,
-                circle_equation(50, elapsed_time * 0.05)
+                this.trajectory.compute_new_point(elapsed_time)
             ));
         }
 
@@ -124,7 +162,6 @@ class Corridor{
             this.frames[i].display();
         }
     }
-
 
 }
 
