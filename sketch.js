@@ -11,7 +11,7 @@ function point_rotation(input, angle){
     Apply rotation around center to XY coordinates.
     Input:
         -input      X, Y coordinates
-        -angle      rotation angle (radians)
+        -angle      radians
     Output:
         -output     X, Y coordinates
     */
@@ -36,13 +36,56 @@ function point_translation(input, vector){
     ]
 }
 
+function segment_through_center(start_point, elapsed_time){
+    /*
+    Describes segment with center at [0, 0] and one end at start_point.
+    Input:
+        -start_point    [X, Y]
+        -elapsed_time
+    Output:
+        -new_point      [X, Y]
+    */
+
+    // rotate reference frame to have start_point on X-axis
+    let angle = Math.atan2(start_point[1], start_point[0]);
+    let projected_point = point_rotation(start_point, -angle);
+
+    // time to travel from start_point to center is set to proj_point X value.
+    let time = elapsed_time % (4 * projected_point[0])
+    let new_projected_x;
+    if (time < 2 * projected_point[0]){
+        // start_point - end_point portion
+        new_projected_x = projected_point[0] - time;
+    } else {
+        // end_point - start_point portion
+        new_projected_x = - 3 * projected_point[0] + time;
+
+    }
+
+    return point_rotation([new_projected_x, 0], angle)
+}
+
+function circle_equation(radius, t){
+    /*
+    Describes circle.
+    Input:
+        -radius
+        -t
+    Output:
+        -new_point      [X, Y]
+    */
+    return [
+        radius * Math.cos(t),
+        radius * Math.sin(t)
+    ]
+}
+
 class Trajectory{
 
     constructor(type, start_point, start_time){
         /*
         Input:
-            -type           str
-                just circle for now
+            -type           str (can be circle or segment for now)
             -start_point    [X, Y]
             -start_time     float
         */
@@ -51,7 +94,7 @@ class Trajectory{
         this.start_point = start_point;
         this.start_time = start_time;
 
-        if (this.type = `circle`){
+        if (this.type == `circle`){
             this.radius = Math.sqrt(
                 Math.pow(start_point[0], 2) + Math.pow(start_point[1], 2)
             );
@@ -68,10 +111,13 @@ class Trajectory{
         */
 
         if (this.type == `circle`){
-            return [
-                this.radius * Math.cos(elapsed_time*0.05 - this.start_time),
-                this.radius * Math.sin(elapsed_time*0.05 - this.start_time)
-            ]
+            return circle_equation(
+                this.radius, elapsed_time*0.05 - this.start_time
+            )
+        } else if (this.type == `segment`){
+            return segment_through_center(
+                this.start_point, elapsed_time - this.start_time
+            )
         }
 
     }
@@ -87,7 +133,7 @@ class Square{
         /*
         Input:
             -side
-            -angle
+            -angle      radians
             -center     [X, Y]
         */
 
@@ -122,10 +168,10 @@ class Corridor{
 
     constructor(){
         this.velocity = 1.1;
-        this.rotational_velocity = 0.01;
+        this.rotational_velocity = 0.0;
         this.period= 3;
         this.frames = [];
-        this.trajectory = new Trajectory(`circle`, [50, 0], 0);
+        this.trajectory = new Trajectory(`segment`, [0, 50], 0);
     }
 
     update(elapsed_time){
