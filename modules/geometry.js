@@ -68,19 +68,29 @@ function segment_through_center(start_point, elapsed_time){
     return point_rotation([new_point_proj_x, 0], angle)
 }
 
-function circle_equation(radius, t){
+function circle_equation(start_point, t){
     /*
     Describes circle.
     Input:
-        -radius
+        -start_point
         -t
     Output:
         -new_point      [X, Y]
     */
-    return [
+
+    // rotate reference frame to have start_point on X-axis
+    let angle = Math.atan2(start_point[1], start_point[0]);
+    let projected_point = point_rotation(start_point, -angle);
+
+    // compute point on circle in rotated reference frame
+    let radius = projected_point[0]
+    let new_projected_point = [
         radius * Math.cos(t),
         radius * Math.sin(t)
     ]
+
+    // return new point described in initial reference frame
+    return point_rotation(new_projected_point, angle)
 }
 
 class Trajectory{
@@ -92,17 +102,9 @@ class Trajectory{
             -start_point    [X, Y]
             -start_time     float
         */
-
         this.type = type;
         this.start_point = start_point;
         this.start_time = start_time;
-
-        if (this.type == `circle`){
-            this.radius = Math.sqrt(
-                Math.pow(start_point[0], 2) + Math.pow(start_point[1], 2)
-            );
-        }
-
     }
 
     compute_new_point(elapsed_time){
@@ -115,7 +117,7 @@ class Trajectory{
 
         if (this.type == `circle`){
             return circle_equation(
-                this.radius,
+                this.start_point,
                 (elapsed_time - this.start_time) * Math.PI/180
             )
         } else if (this.type == `segment`){
