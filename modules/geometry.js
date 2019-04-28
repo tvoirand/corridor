@@ -38,7 +38,6 @@ function point_translation(input, vector){
 
 /* Trajectories =========================================================== */
 
-
 function segment_through_center(start_point, elapsed_time){
     /*
     Describes segment with center at [0, 0] and one end at start_point.
@@ -83,6 +82,86 @@ function circle_equation(radius, t){
     ]
 }
 
+class Trajectory{
+
+    constructor(type, start_point, start_time){
+        /*
+        Input:
+            -type           str (can be circle or segment for now)
+            -start_point    [X, Y]
+            -start_time     float
+        */
+
+        this.type = type;
+        this.start_point = start_point;
+        this.start_time = start_time;
+
+        if (this.type == `circle`){
+            this.radius = Math.sqrt(
+                Math.pow(start_point[0], 2) + Math.pow(start_point[1], 2)
+            );
+        }
+
+    }
+
+    compute_new_point(elapsed_time){
+        /*
+        Input:
+            -elapsed_time
+        Output:
+            -new_point      [X, Y]
+        */
+
+        if (this.type == `circle`){
+            return circle_equation(
+                this.radius, elapsed_time*0.05 - this.start_time
+            )
+        } else if (this.type == `segment`){
+            return segment_through_center(
+                this.start_point, elapsed_time - this.start_time
+            )
+        }
+
+    }
+
+}
 
 
 /* Shapes ================================================================= */
+
+class Square{
+
+    constructor(side, angle, center, size_max){
+        /*
+        Input:
+            -side
+            -angle      radians
+            -center     [X, Y]
+        */
+        this.side = side;
+        this.angle = angle;
+        this.center = center;
+        this.size_max = size_max;
+    }
+
+    display(){
+
+        let corners = [
+            [-this.side/2, -this.side/2],
+            [-this.side/2, this.side/2],
+            [this.side/2, this.side/2],
+            [this.side/2, -this.side/2]
+        ];
+
+        for (let i = 0; i < corners.length; i++){
+            corners[i] = point_rotation(corners[i], this.angle);
+            corners[i] = point_translation(corners[i], this.center)
+        }
+
+        line(corners[0][0], corners[0][1], corners[1][0], corners[1][1]);
+        line(corners[1][0], corners[1][1], corners[2][0], corners[2][1]);
+        line(corners[2][0], corners[2][1], corners[3][0], corners[3][1]);
+        line(corners[3][0], corners[3][1], corners[0][0], corners[0][1]);
+    }
+
+}
