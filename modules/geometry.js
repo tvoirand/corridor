@@ -50,21 +50,22 @@ function segment_through_center(start_point, elapsed_time){
 
     // rotate reference frame to have start_point on X-axis
     let angle = Math.atan2(start_point[1], start_point[0]);
-    let projected_point = point_rotation(start_point, -angle);
+    let start_point_proj = point_rotation(start_point, -angle);
 
     // time to travel from start_point to center is set to proj_point X value.
-    let time = elapsed_time % (4 * projected_point[0])
-    let new_projected_x;
-    if (time < 2 * projected_point[0]){
+    let time = elapsed_time % (4 * start_point_proj[0])
+    let new_point_proj_x;
+    if (time < 2 * start_point_proj[0]){
         // start_point - end_point portion
-        new_projected_x = projected_point[0] - time;
+        new_point_proj_x = start_point_proj[0] - time;
     } else {
         // end_point - start_point portion
-        new_projected_x = - 3 * projected_point[0] + time;
+        new_point_proj_x = - 3 * start_point_proj[0] + time;
 
     }
 
-    return point_rotation([new_projected_x, 0], angle)
+    // return new point described in initial reference frame
+    return point_rotation([new_point_proj_x, 0], angle)
 }
 
 function circle_equation(radius, t){
@@ -115,7 +116,7 @@ class Trajectory{
         if (this.type == `circle`){
             return circle_equation(
                 this.radius,
-                elapsed_time - this.start_time
+                (elapsed_time - this.start_time) * Math.PI/180
             )
         } else if (this.type == `segment`){
             return segment_through_center(
