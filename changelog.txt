@@ -1,6 +1,12 @@
 Changelog for Corridor.
 
 -------------------------------------------------------------------------------
+20190428
+    -added segment trajectory
+    -improved code structure
+    -removed Square static variables
+
+-------------------------------------------------------------------------------
 20190427
     -added Square static variables
     -added Trajectory class

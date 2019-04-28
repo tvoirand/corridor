@@ -114,11 +114,13 @@ class Trajectory{
 
         if (this.type == `circle`){
             return circle_equation(
-                this.radius, elapsed_time*0.05 - this.start_time
+                this.radius,
+                elapsed_time - this.start_time
             )
         } else if (this.type == `segment`){
             return segment_through_center(
-                this.start_point, elapsed_time - this.start_time
+                this.start_point,
+                elapsed_time - this.start_time
             )
         }
 
