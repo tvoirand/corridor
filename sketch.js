@@ -53,20 +53,17 @@ class Trajectory{
 
 class Square{
 
-    static size_min = 5;
-    static size_max = Math.sqrt(2) * Math.max(canvas_width, canvas_height);
-
-    constructor(side, angle, center){
+    constructor(side, angle, center, size_max){
         /*
         Input:
             -side
             -angle      radians
             -center     [X, Y]
         */
-
         this.side = side;
         this.angle = angle;
         this.center = center;
+        this.size_max = size_max;
     }
 
     display(){
@@ -117,14 +114,15 @@ class Corridor{
         // insert new frames periodically
         if (elapsed_time % this.period == 0){
             this.frames.push(new Square(
-                Square.size_min,
-                elapsed_time * this.rotational_velocity,
-                this.trajectory.compute_new_point(elapsed_time)
+                5, // side
+                elapsed_time * this.rotational_velocity, // angle
+                this.trajectory.compute_new_point(elapsed_time), // center
+                Math.sqrt(2) * Math.max(canvas_width, canvas_height) // size_max
             ));
         }
 
         // get rid of first frame if larger than max size
-        if (this.frames[0].side > Square.size_max){
+        if (this.frames[0].side > this.frames[0].size_max){
             this.frames.shift();
         }
 
