@@ -11,10 +11,16 @@ class Corridor{
 
     constructor(){
         this.velocity = 1.1;
-        this.rotational_velocity = 0.0;
+        this.rotational_velocity = 0.01;
         this.period= 3;
+        this.distance_max = 200;
         this.frames = [];
-        this.trajectory = new Trajectory(`segment`, [0, 50], 0);
+        this.trajectory = new Trajectory(
+            `segment`,
+            [100, 200],
+            0,
+            this.distance_max
+        );
     }
 
     update(elapsed_time){
@@ -84,5 +90,21 @@ function draw() {
     my_corridor.display();
 
     elapsed_time += 1;
+
+    if (elapsed_time % 100 == 0){
+        my_corridor.trajectory = new Trajectory(
+            `segment`,
+            my_corridor.frames[my_corridor.frames.length - 1].center,
+            elapsed_time,
+            my_corridor.distance_max
+        )
+    } else if (elapsed_time % 100 == 50){
+        my_corridor.trajectory = new Trajectory(
+            `circle`,
+            my_corridor.frames[my_corridor.frames.length - 1].center,
+            elapsed_time,
+            my_corridor.distance_max
+        )
+    }
 
 }

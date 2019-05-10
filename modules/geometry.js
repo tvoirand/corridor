@@ -120,16 +120,25 @@ function circle_equation(start_point, t){
 
 class Trajectory{
 
-    constructor(type, start_point, start_time){
+    constructor(type, start_point, start_time, distance_max){
         /*
         Input:
             -type           str (can be circle or segment for now)
             -start_point    [X, Y]
             -start_time     float
+            -distance_max   float
+                distance from center upper limit for this trajectory
         */
-        this.type = type;
+
         this.start_point = start_point;
         this.start_time = start_time;
+        this.distance_max = distance_max;
+
+        this.type = type;
+        if (this.type == "segment"){
+            this.direction_is_inward = Math.random() >= 0.5;
+        }
+
     }
 
     compute_new_point(elapsed_time){
@@ -149,8 +158,8 @@ class Trajectory{
             return segment_through_center(
                 this.start_point,
                 elapsed_time - this.start_time,
-                200,
-                Math.random() >= 0.5
+                this.distance_max,
+                this.direction_is_inward
             )
         }
 
