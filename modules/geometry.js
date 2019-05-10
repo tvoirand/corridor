@@ -38,34 +38,59 @@ function point_translation(input, vector){
 
 /* Trajectories =========================================================== */
 
-function segment_through_center(start_point, elapsed_time){
+function segment_through_center(
+    start_point,
+    elapsed_time,
+    distance_max,
+    direction_is_inward
+){
     /*
     Describes segment with center at [0, 0] and one end at start_point.
     Input:
-        -start_point    [X, Y]
+        -start_point            [X, Y]
         -elapsed_time
+        -distance_max           float
+            distance from center upper limit
+        -direction_is_inward    bool
+            defines if moving towards center or away from center at start
     Output:
-        -new_point      [X, Y]
+        -new_point              [X, Y]
     */
 
     // rotate reference frame to have start_point on X-axis
     let angle = Math.atan2(start_point[1], start_point[0]);
     let start_point_proj = point_rotation(start_point, -angle);
 
-    // time to travel from start_point to center is set to proj_point X value.
-    let time = elapsed_time % (4 * start_point_proj[0])
     let new_point_proj_x;
-    if (time < 2 * start_point_proj[0]){
-        // start_point - end_point portion
-        new_point_proj_x = start_point_proj[0] - time;
+    if (direction_is_inward == true){
+        // time to travel from distance_max to center is set to proj_point X value.
+        let time = elapsed_time % (4 * distance_max) + distance_max - start_point_proj[0];
+
+        if (time < 2 * distance_max){
+            // start_point - end_point portion
+            new_point_proj_x = distance_max - time;
+        } else {
+            // end_point - start_point portion
+            new_point_proj_x = - 3 * distance_max + time;
+        }
     } else {
-        // end_point - start_point portion
-        new_point_proj_x = - 3 * start_point_proj[0] + time;
-
+        // time to travel from distance_max to center is set to proj_point X value.
+        if (elapsed_time < distance_max - start_point_proj[0]){
+            new_point_proj_x = start_point_proj[0] + elapsed_time;
+        } else {
+            let time = (elapsed_time + start_point_proj[0] - distance_max) % (4 * distance_max);
+            if (time < 2 * distance_max){
+                // start_point - end_point portion
+                new_point_proj_x = distance_max - time;
+            } else {
+                // end_point - start_point portion
+                new_point_proj_x = - 3 * distance_max + time;
+            }
+        }
     }
-
     // return new point described in initial reference frame
     return point_rotation([new_point_proj_x, 0], angle)
+
 }
 
 function circle_equation(start_point, t){
@@ -123,7 +148,9 @@ class Trajectory{
         } else if (this.type == `segment`){
             return segment_through_center(
                 this.start_point,
-                elapsed_time - this.start_time
+                elapsed_time - this.start_time,
+                200,
+                Math.random() >= 0.5
             )
         }
 
