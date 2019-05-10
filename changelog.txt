@@ -1,5 +1,12 @@
 Changelog for Corridor.
 
+
+-------------------------------------------------------------------------------
+20190510
+    -added center as moving dot test script
+    -added maximum distance for new frame center in corridor class
+    -improved segment trajectory by allowing randomly outwards direction
+
 -------------------------------------------------------------------------------
 20190428
     -added segment trajectory
