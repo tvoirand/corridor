@@ -120,10 +120,9 @@ function circle_equation(start_point, t){
 
 class Trajectory{
 
-    constructor(type, start_point, start_time, distance_max){
+    constructor(start_point, start_time, distance_max){
         /*
         Input:
-            -type           str (can be circle or segment for now)
             -start_point    [X, Y]
             -start_time     float
             -distance_max   float
@@ -134,11 +133,15 @@ class Trajectory{
         this.start_time = start_time;
         this.distance_max = distance_max;
 
-        this.type = type;
-        if (this.type == "segment"){
-            this.direction_is_inward = Math.random() >= 0.5;
-        }
+    }
 
+}
+
+class SegmentTraj extends Trajectory{
+
+    constructor(start_point, start_time, distance_max){
+        super(start_point, start_time, distance_max);
+        this.direction_is_inward = Math.random() >= 0.5;
     }
 
     compute_new_point(elapsed_time){
@@ -149,19 +152,35 @@ class Trajectory{
             -new_point      [X, Y]
         */
 
-        if (this.type == `circle`){
-            return circle_equation(
-                this.start_point,
-                (elapsed_time - this.start_time) * Math.PI/180
-            )
-        } else if (this.type == `segment`){
-            return segment_through_center(
-                this.start_point,
-                elapsed_time - this.start_time,
-                this.distance_max,
-                this.direction_is_inward
-            )
-        }
+        return segment_through_center(
+            this.start_point,
+            elapsed_time - this.start_time,
+            this.distance_max,
+            this.direction_is_inward
+        )
+
+    }
+
+}
+
+class CircleTraj extends Trajectory{
+
+    constructor(start_point, start_time, distance_max){
+        super(start_point, start_time, distance_max);
+    }
+
+    compute_new_point(elapsed_time){
+        /*
+        Input:
+            -elapsed_time
+        Output:
+            -new_point      [X, Y]
+        */
+
+        return circle_equation(
+            this.start_point,
+            (elapsed_time - this.start_time) * Math.PI/180
+        )
 
     }
 

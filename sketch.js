@@ -15,8 +15,7 @@ class Corridor{
         this.period= 3;
         this.distance_max = 200;
         this.frames = [];
-        this.trajectory = new Trajectory(
-            `segment`,
+        this.trajectory = new SegmentTraj(
             [100, 200],
             0,
             this.distance_max
@@ -92,15 +91,13 @@ function draw() {
     elapsed_time += 1;
 
     if (elapsed_time % 100 == 0){
-        my_corridor.trajectory = new Trajectory(
-            `segment`,
+        my_corridor.trajectory = new SegmentTraj(
             my_corridor.frames[my_corridor.frames.length - 1].center,
             elapsed_time,
             my_corridor.distance_max
         )
     } else if (elapsed_time % 100 == 50){
-        my_corridor.trajectory = new Trajectory(
-            `circle`,
+        my_corridor.trajectory = new CircleTraj(
             my_corridor.frames[my_corridor.frames.length - 1].center,
             elapsed_time,
             my_corridor.distance_max
