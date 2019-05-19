@@ -1,5 +1,6 @@
 /*
-Processing.js tryouts
+This is a test script similar to the main "sketch.js" script, but only
+displaying the trajectory of the center of each new frames in the corridor.
 */
 
 // global variables
@@ -12,16 +13,21 @@ class Corridor{
     constructor(){
         this.velocity = 1.1;
         this.period= 3;
+        this.distance_max = 200;
         this.center = [100, 200];
-        this.trajectory = new Trajectory(`segment`, [100, 200], 0);
+        this.trajectory = new SegmentTraj(
+            [100, 200],
+            0,
+            this.distance_max
+        );
     }
 
     update(elapsed_time){
         /*
-        Enlarge each frame, insert new small frames and remove large frames.
+        Move center periodically
         */
 
-        // insert new frames periodically
+        // Move center periodically
         if (elapsed_time % this.period == 0){
             this.center = this.trajectory.compute_new_point(elapsed_time)
         }
@@ -67,16 +73,16 @@ function draw() {
     elapsed_time += 1;
 
     if (elapsed_time % 100 == 0){
-        my_corridor.trajectory = new Trajectory(
-            `segment`,
-            my_corridor.center,//my_corridor.frames[my_corridor.frames.length - 1].center,
-            elapsed_time
+        my_corridor.trajectory = new SegmentTraj(
+            my_corridor.center,
+            elapsed_time,
+            my_corridor.distance_max
         )
     } else if (elapsed_time % 100 == 50){
-        my_corridor.trajectory = new Trajectory(
-            `circle`,
-            my_corridor.center,//my_corridor.frames[my_corridor.frames.length - 1].center,
-            elapsed_time
+        my_corridor.trajectory = new CircleTraj(
+            my_corridor.center,
+            elapsed_time,
+            my_corridor.distance_max
         )
     }
 
