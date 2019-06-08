@@ -1,5 +1,5 @@
 /*
-Geometry modules for the corridor project.
+Geometry module for the corridor project.
 */
 
 

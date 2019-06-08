@@ -5,20 +5,21 @@ Processing.js tryouts
 // global variables
 let canvas_width = 800;
 let canvas_height = 600;
-
+let mic;
+let volume_history = [0.0];
 
 class Corridor{
 
     constructor(){
-        this.velocity = 1.1;
-        this.rotational_velocity = 0.01;
-        this.period= 3;
-        this.distance_max = 200;
+        this.velocity = 1.1; // ratio at which frames grow bigger
+        this.rotational_velocity = 0.0;
+        this.period= 3; // rate at which new frames are inserted
+        this.distance_max = 200; // distance from center upper limit
         this.frames = [];
         this.trajectory = new SegmentTraj(
-            [100, 200],
-            0,
-            this.distance_max
+            [100, 200], // start point
+            0, // start time
+            this.distance_max // max distance
         );
     }
 
@@ -73,6 +74,8 @@ function setup() {
     createCanvas(canvas_width, canvas_height);
     stroke(255);
     frameRate(30);
+    mic = new p5.AudioIn();
+    mic.start();
 }
 
 
@@ -84,6 +87,12 @@ function draw() {
     // initialisation
     translate(width/2, height/2);
     background(0);
+
+    // adjust rotational velocity to mic volume
+    let current_volume = mic.getLevel();
+    volume_history.push(current_volume);
+    current_volume_normalized = normalize(current_volume, volume_history);
+    my_corridor.rotational_velocity = 0.03 * current_volume_normalized;
 
     my_corridor.update(elapsed_time);
     my_corridor.display();
