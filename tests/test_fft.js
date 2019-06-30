@@ -4,16 +4,17 @@ let canvas_height = 600;
 
 let amplitude_history = [0.0];
 
+let band = 3;
+
 function preload(){
-    sound = loadSound('tests/the-deli-532pm.mp3');
+    sound = loadSound('tests/08_8_624_part2.mp3');
+    // sound = loadSound('tests/the-deli-532pm.mp3');
     // sound = loadSound('tests/salut-cest-cool-techno-toujours-pareil.mp3');
 }
 
 function setup(){
-    var cnv = createCanvas(canvas_width, canvas_height);
-    cnv.mouseClicked(togglePlay);
-    // fft = new p5.FFT(0.8, 16);
-    my_analysis = new Analysis(3, 125)
+    my_analysis = new Analysis(band, 125);
+    my_analysis.display_setup(canvas_width, canvas_height);
     sound.amp(0.2);
 }
 
@@ -23,20 +24,13 @@ function draw(){
 
     bpm = my_analysis.analyze();
 
-    my_analysis.display_spectrum(canvas_width, canvas_height);
-    my_analysis.display_band_signal(canvas_width, canvas_height);
+    my_analysis.display_spectrum();
+    my_analysis.display_band_signal();
 
 
     text('click to play/pause', 4, 10);
 
-    text('BPM: ' + bpm, 4, 20)
-}
+    text('BPM: ' + bpm, 4, 20);
 
-// fade sound if mouse is over canvas
-function togglePlay() {
-    if (sound.isPlaying()) {
-        sound.pause();
-    } else {
-        sound.loop();
-    }
+    text('band: ' + band, 4, 30);
 }

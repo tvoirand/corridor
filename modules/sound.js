@@ -49,46 +49,60 @@ class Analysis {
 
     }
 
-    display_spectrum(canvas_width, canvas_height) {
+    display_setup(canvas_width, canvas_height){
         /*
-        Display spectrum of input sound
+        P5.js related setup function for this analysis display.
         Input:
             -canvas_width   int
             -canvas_height  int
         */
+        this.canvas = createCanvas(canvas_width, canvas_height);
+        this.canvas.mouseClicked(toggle_play);
+    }
+
+    display_spectrum() {
+        /*
+        Display spectrum of input sound.
+        */
         noStroke();
         fill(0, 255, 0); // spectrum is green
         for (var i = 0; i < this.spectrum.length; i++){
-            var x = map(i, 0, this.spectrum.length, 0, canvas_width);
-            var h = -canvas_height + map(
+            var x = map(i, 0, this.spectrum.length, 0, this.canvas.width);
+            var h = -this.canvas.height + map(
                 this.spectrum[i],
                 0,
                 255,
-                canvas_height,
+                this.canvas.height,
                 0
             );
-            rect(x, canvas_height, canvas_width / this.spectrum.length, h)
+            rect(x, this.canvas.height, this.canvas.width / this.spectrum.length, h)
         }
     }
 
-    display_band_signal(canvas_width, canvas_height) {
+    display_band_signal() {
         /*
         Display amplitude signal of analyzed band.
-        Input:
-            -canvas_width   int
-            -canvas_height  int
         */
         noFill();
         beginShape();
         stroke(255, 0, 0);
         strokeWeight(1);
         for (var i = 0; i< this.amplitude_history.length; i++){
-          var x = map(i, 0, this.amplitude_history.length, 0, canvas_width);
-          var y = map( this.amplitude_history[i], 0, 255, 0, canvas_height);
+          var x = map(i, 0, this.amplitude_history.length, 0, this.canvas.width);
+          var y = map( this.amplitude_history[i], 0, 255, 0, this.canvas.height);
           vertex(x, y);
         }
         endShape();
     }
 
 
+}
+
+
+function toggle_play() {
+    if (sound.isPlaying()) {
+        sound.pause();
+    } else {
+        sound.loop();
+    }
 }
