@@ -70,7 +70,6 @@ class Corridor{
 let elapsed_time = 0;
 let my_corridor = new Corridor;
 
-
 function setup() {
     /*
     Processing setup function.
@@ -96,26 +95,33 @@ function draw() {
     // adjust new_frames_color to mic volume
     let current_volume = mic.getLevel();
     volume_history.push(current_volume);
+    if (volume_history.length > 200) {
+        volume_history.shift()
+    }
     current_volume_normalized = normalize(current_volume, volume_history);
     let new_frames_color = 255*current_volume_normalized;
-
     my_corridor.update(elapsed_time, new_frames_color);
     my_corridor.display();
 
     elapsed_time += 1;
 
-    if (elapsed_time % 100 == 0){
-        my_corridor.trajectory = new SegmentTraj(
-            my_corridor.frames[my_corridor.frames.length - 1].center,
-            elapsed_time,
-            my_corridor.distance_max
-        )
-    } else if (elapsed_time % 100 == 50){
-        my_corridor.trajectory = new CircleTraj(
-            my_corridor.frames[my_corridor.frames.length - 1].center,
-            elapsed_time,
-            my_corridor.distance_max
-        )
+    // change trajectory type when high volume is reached
+    if (current_volume_normalized == 1){
+
+        if (my_corridor.trajectory instanceof SegmentTraj){
+            my_corridor.trajectory = new CircleTraj(
+                my_corridor.frames[my_corridor.frames.length - 1].center,
+                elapsed_time,
+                my_corridor.distance_max
+            )
+        } else if (my_corridor.trajectory instanceof CircleTraj){
+            my_corridor.trajectory = new SegmentTraj(
+                my_corridor.frames[my_corridor.frames.length - 1].center,
+                elapsed_time,
+                my_corridor.distance_max
+            )
+        }
+
     }
 
 }
