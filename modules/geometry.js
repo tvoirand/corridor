@@ -191,17 +191,19 @@ class CircleTraj extends Trajectory{
 
 class Square{
 
-    constructor(side, angle, center, size_max){
+    constructor(side, angle, center, size_max, color){
         /*
         Input:
             -side
             -angle      radians
             -center     [X, Y]
+            -size_max
         */
         this.side = side;
         this.angle = angle;
         this.center = center;
         this.size_max = size_max;
+        this.color = color;
     }
 
     display(){
@@ -217,6 +219,8 @@ class Square{
             corners[i] = point_rotation(corners[i], this.angle);
             corners[i] = point_translation(corners[i], this.center)
         }
+
+        stroke(this.color);
 
         line(corners[0][0], corners[0][1], corners[1][0], corners[1][1]);
         line(corners[1][0], corners[1][1], corners[2][0], corners[2][1]);
