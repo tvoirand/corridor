@@ -1,4 +1,4 @@
 ## TODO
 
-- implement audio interaction: tune parameters using analysis of audio input
 - implement use of actual perspective matrix, instead of simply enlarging frames
+- improve audio interaction: tune rotational velocity to proper BPM analysis

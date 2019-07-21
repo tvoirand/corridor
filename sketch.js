@@ -67,7 +67,7 @@ class Corridor{
 }
 
 
-let elapsed_time = 0;
+let elapsed_time_frames = 0;
 let my_corridor = new Corridor;
 
 function setup() {
@@ -100,10 +100,10 @@ function draw() {
     }
     current_volume_normalized = normalize(current_volume, volume_history);
     let new_frames_color = 255*current_volume_normalized;
-    my_corridor.update(elapsed_time, new_frames_color);
+    my_corridor.update(elapsed_time_frames, new_frames_color);
     my_corridor.display();
 
-    elapsed_time += 1;
+    elapsed_time_frames += 1;
 
     // change trajectory type when high volume is reached
     if (current_volume_normalized == 1){
@@ -111,13 +111,13 @@ function draw() {
         if (my_corridor.trajectory instanceof SegmentTraj){
             my_corridor.trajectory = new CircleTraj(
                 my_corridor.frames[my_corridor.frames.length - 1].center,
-                elapsed_time,
+                elapsed_time_frames,
                 my_corridor.distance_max
             )
         } else if (my_corridor.trajectory instanceof CircleTraj){
             my_corridor.trajectory = new SegmentTraj(
                 my_corridor.frames[my_corridor.frames.length - 1].center,
-                elapsed_time,
+                elapsed_time_frames,
                 my_corridor.distance_max
             )
         }
