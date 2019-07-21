@@ -2,7 +2,6 @@
 let canvas_width = 800;
 let canvas_height = 600;
 let mic;
-let amplitude_history = [0.0];
 
 let band = 3;
 

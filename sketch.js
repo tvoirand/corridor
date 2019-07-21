@@ -6,6 +6,7 @@ Processing.js tryouts
 let canvas_width = 800;
 let canvas_height = 600;
 let mic;
+let frame_rate = 30; //frames per second
 let volume_history = [0.0];
 
 class Corridor{
@@ -13,7 +14,7 @@ class Corridor{
     constructor(){
         this.velocity = 1.1; // ratio at which frames grow bigger
         this.rotational_velocity = 0.0;
-        this.period= 3; // rate at which new frames are inserted
+        this.period = 3; // rate at which new frames are inserted
         this.distance_max = 200; // distance from center upper limit
         this.frames = [];
         this.trajectory = new SegmentTraj(
@@ -23,9 +24,12 @@ class Corridor{
         );
     }
 
-    update(elapsed_time){
+    update(elapsed_time, new_frames_color){
         /*
         Enlarge each frame, insert new small frames and remove large frames.
+        Input:
+            -elapsed_time       float
+            -new_frames_color   float
         */
 
         // update each frame
@@ -42,7 +46,8 @@ class Corridor{
                 5, // side
                 elapsed_time * this.rotational_velocity, // angle
                 this.trajectory.compute_new_point(elapsed_time), // center
-                Math.sqrt(2) * Math.max(canvas_width, canvas_height) // size_max
+                Math.sqrt(2) * Math.max(canvas_width, canvas_height), // size_max
+                new_frames_color
             ));
         }
 
@@ -73,7 +78,7 @@ function setup() {
     */
     createCanvas(canvas_width, canvas_height);
     stroke(255);
-    frameRate(30);
+    frameRate(frame_rate);
     mic = new p5.AudioIn();
     mic.start();
 }
@@ -88,13 +93,13 @@ function draw() {
     translate(width/2, height/2);
     background(0);
 
-    // adjust rotational velocity to mic volume
+    // adjust new_frames_color to mic volume
     let current_volume = mic.getLevel();
     volume_history.push(current_volume);
     current_volume_normalized = normalize(current_volume, volume_history);
-    my_corridor.rotational_velocity = 0.03 * current_volume_normalized;
+    let new_frames_color = 255*current_volume_normalized;
 
-    my_corridor.update(elapsed_time);
+    my_corridor.update(elapsed_time, new_frames_color);
     my_corridor.display();
 
     elapsed_time += 1;
