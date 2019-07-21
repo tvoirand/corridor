@@ -1,21 +1,16 @@
 
 let canvas_width = 800;
 let canvas_height = 600;
-
+let mic;
 let amplitude_history = [0.0];
 
 let band = 3;
 
-function preload(){
-    sound = loadSound('tests/08_8_624_part2.mp3');
-    // sound = loadSound('tests/the-deli-532pm.mp3');
-    // sound = loadSound('tests/salut-cest-cool-techno-toujours-pareil.mp3');
-}
-
 function setup(){
+    mic = new p5.AudioIn();
+    mic.start();
     my_analysis = new Analysis(band, 125);
-    my_analysis.display_setup(canvas_width, canvas_height);
-    sound.amp(0.2);
+    my_analysis.display_setup(canvas_width, canvas_height, mic);
 }
 
 function draw(){

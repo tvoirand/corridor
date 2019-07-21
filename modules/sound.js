@@ -49,15 +49,16 @@ class Analysis {
 
     }
 
-    display_setup(canvas_width, canvas_height){
+    display_setup(canvas_width, canvas_height, source){
         /*
         P5.js related setup function for this analysis display.
         Input:
             -canvas_width   int
             -canvas_height  int
+            -source         p5.sound object
         */
         this.canvas = createCanvas(canvas_width, canvas_height);
-        this.canvas.mouseClicked(toggle_play);
+        this.fft.setInput(source)
     }
 
     display_spectrum() {
@@ -96,13 +97,4 @@ class Analysis {
     }
 
 
-}
-
-
-function toggle_play() {
-    if (sound.isPlaying()) {
-        sound.pause();
-    } else {
-        sound.loop();
-    }
 }
