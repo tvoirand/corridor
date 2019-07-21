@@ -75,7 +75,8 @@ function setup() {
     Processing setup function.
     Called one time at start.
     */
-    createCanvas(canvas_width, canvas_height);
+    var canvas = createCanvas(canvas_width, canvas_height);
+    canvas.parent("canvas_div");
     stroke(255);
     frameRate(frame_rate);
     mic = new p5.AudioIn();
