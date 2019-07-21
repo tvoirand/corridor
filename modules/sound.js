@@ -96,5 +96,20 @@ class Analysis {
         endShape();
     }
 
+    display_threshold() {
+        /*
+        Display threshold for this analysis to detect beats and count BPM.
+        */
+        noFill();
+        stroke(0, 0, 255);
+        strokeWeight(1);
+        line(
+            0,
+            this.threshold*this.canvas.height/255,
+            this.canvas.width,
+            this.threshold*this.canvas.height/255,
+        );
+    }
+
 
 }

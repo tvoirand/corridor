@@ -8,7 +8,7 @@ let band = 3;
 function setup(){
     mic = new p5.AudioIn();
     mic.start();
-    my_analysis = new Analysis(band, 125);
+    my_analysis = new Analysis(band, 20);
     my_analysis.display_setup(canvas_width, canvas_height, mic);
 }
 
@@ -20,6 +20,7 @@ function draw(){
 
     my_analysis.display_spectrum();
     my_analysis.display_band_signal();
+    my_analysis.display_threshold();
 
 
     text('click to play/pause', 4, 10);
