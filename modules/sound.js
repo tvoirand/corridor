@@ -49,61 +49,68 @@ class Analysis {
 
     }
 
-    display_setup(canvas_width, canvas_height, source){
+    display_setup(canvas_width, canvas_height, source, p5js){
         /*
         P5.js related setup function for this analysis display.
         Input:
             -canvas_width   int
             -canvas_height  int
             -source         p5.sound object
+            -p5js           p5.js instance
         */
-        this.canvas = createCanvas(canvas_width, canvas_height);
+        this.canvas = p5js.createCanvas(canvas_width, canvas_height);
         this.fft.setInput(source)
     }
 
-    display_spectrum() {
+    display_spectrum(p5js) {
         /*
         Display spectrum of input sound.
+        Input:
+            -p5js   p5.js instance
         */
-        noStroke();
-        fill(0, 255, 0); // spectrum is green
+        p5js.noStroke();
+        p5js.fill(0, 255, 0); // spectrum is green
         for (var i = 0; i < this.spectrum.length; i++){
-            var x = map(i, 0, this.spectrum.length, 0, this.canvas.width);
-            var h = -this.canvas.height + map(
+            var x = p5js.map(i, 0, this.spectrum.length, 0, this.canvas.width);
+            var h = -this.canvas.height + p5js.map(
                 this.spectrum[i],
                 0,
                 255,
                 this.canvas.height,
                 0
             );
-            rect(x, this.canvas.height, this.canvas.width / this.spectrum.length, h)
+            p5js.rect(x, this.canvas.height, this.canvas.width / this.spectrum.length, h)
         }
     }
 
-    display_band_signal() {
+    display_band_signal(p5js) {
         /*
         Display amplitude signal of analyzed band.
+        Input:
+            -p5js   p5.js instance
         */
-        noFill();
-        beginShape();
-        stroke(255, 0, 0);
-        strokeWeight(1);
+        p5js.noFill();
+        p5js.beginShape();
+        p5js.stroke(255, 0, 0);
+        p5js.strokeWeight(1);
         for (var i = 0; i< this.amplitude_history.length; i++){
-          var x = map(i, 0, this.amplitude_history.length, 0, this.canvas.width);
-          var y = map( this.amplitude_history[i], 0, 255, 0, this.canvas.height);
-          vertex(x, y);
+          var x = p5js.map(i, 0, this.amplitude_history.length, 0, this.canvas.width);
+          var y = p5js.map( this.amplitude_history[i], 0, 255, 0, this.canvas.height);
+          p5js.vertex(x, y);
         }
-        endShape();
+        p5js.endShape();
     }
 
-    display_threshold() {
+    display_threshold(p5js) {
         /*
         Display threshold for this analysis to detect beats and count BPM.
+        Input:
+            -p5js   p5.js instance
         */
-        noFill();
-        stroke(0, 0, 255);
-        strokeWeight(1);
-        line(
+        p5js.noFill();
+        p5js.stroke(0, 0, 255);
+        p5js.strokeWeight(1);
+        p5js.line(
             0,
             this.threshold*this.canvas.height/255,
             this.canvas.width,

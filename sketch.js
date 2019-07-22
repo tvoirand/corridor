@@ -58,71 +58,88 @@ class Corridor{
 
     }
 
-    display(){
+    display(p5js){
+        /*
+        Input:
+            -p5js     p5js instance
+        */
         for (let i = 0; i < this.frames.length; i++){
-            this.frames[i].display();
+            this.frames[i].display(p5js);
         }
     }
 
 }
 
 
-let elapsed_time_frames = 0;
-let my_corridor = new Corridor;
+function start_corridor_sketch() {
 
-function setup() {
-    /*
-    Processing setup function.
-    Called one time at start.
-    */
-    var canvas = createCanvas(canvas_width, canvas_height);
-    canvas.parent("canvas_div");
-    stroke(255);
-    frameRate(frame_rate);
-    mic = new p5.AudioIn();
-    mic.start();
-}
+    var corridor_sketch = function(p5js) {
+        /*
+        Input:
+            -p5js   p5js instance
+        */
 
+        let elapsed_time_frames = 0;
+        let my_corridor = new Corridor;
 
-function draw() {
-    /*
-    Processing main loop function.
-    */
+        p5js.setup = function() {
+            /*
+            Processing setup function.
+            Called one time at start.
+            */
+            var canvas = p5js.createCanvas(canvas_width, canvas_height);
+            canvas.parent("canvas_div");
+            p5js.stroke(255);
+            p5js.frameRate(frame_rate);
+            mic = new p5.AudioIn();
+            mic.start();
+        };
 
-    // initialisation
-    translate(width/2, height/2);
-    background(0);
+        p5js.draw = function() {
+            /*
+            Processing main loop function.
+            */
 
-    // adjust new_frames_color to mic volume
-    let current_volume = mic.getLevel();
-    volume_history.push(current_volume);
-    if (volume_history.length > 200) {
-        volume_history.shift()
-    }
-    current_volume_normalized = normalize(current_volume, volume_history);
-    let new_frames_color = 255*current_volume_normalized;
-    my_corridor.update(elapsed_time_frames, new_frames_color);
-    my_corridor.display();
+            // initialisation
+            p5js.translate(p5js.width/2, p5js.height/2);
+            p5js.background(0);
 
-    elapsed_time_frames += 1;
+            // adjust new_frames_color to mic volume
+            let current_volume = mic.getLevel();
+            volume_history.push(current_volume);
+            if (volume_history.length > 200) {
+                volume_history.shift()
+            }
+            current_volume_normalized = normalize(current_volume, volume_history);
+            let new_frames_color = 255*current_volume_normalized;
+            my_corridor.update(elapsed_time_frames, new_frames_color);
+            my_corridor.display(p5js);
 
-    // change trajectory type when high volume is reached
-    if (current_volume_normalized == 1){
+            elapsed_time_frames += 1;
 
-        if (my_corridor.trajectory instanceof SegmentTraj){
-            my_corridor.trajectory = new CircleTraj(
-                my_corridor.frames[my_corridor.frames.length - 1].center,
-                elapsed_time_frames,
-                my_corridor.distance_max
-            )
-        } else if (my_corridor.trajectory instanceof CircleTraj){
-            my_corridor.trajectory = new SegmentTraj(
-                my_corridor.frames[my_corridor.frames.length - 1].center,
-                elapsed_time_frames,
-                my_corridor.distance_max
-            )
-        }
+            // change trajectory type when high volume is reached
+            if (current_volume_normalized == 1){
 
-    }
+                if (my_corridor.trajectory instanceof SegmentTraj){
+                    my_corridor.trajectory = new CircleTraj(
+                        my_corridor.frames[my_corridor.frames.length - 1].center,
+                        elapsed_time_frames,
+                        my_corridor.distance_max
+                    )
+                } else if (my_corridor.trajectory instanceof CircleTraj){
+                    my_corridor.trajectory = new SegmentTraj(
+                        my_corridor.frames[my_corridor.frames.length - 1].center,
+                        elapsed_time_frames,
+                        my_corridor.distance_max
+                    )
+                };
 
-}
+            };
+
+        };
+
+    };
+
+    var myp5 = new p5(corridor_sketch);
+
+};

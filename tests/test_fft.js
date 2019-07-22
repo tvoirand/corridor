@@ -1,31 +1,45 @@
 
-let canvas_width = 800;
-let canvas_height = 600;
-let mic;
+function start_fft_sketch() {
 
-let band = 3;
+    var fft_sketch = function(p5js) {
+        /*
+        Input:
+            -p5js   p5js instance
+        */
 
-function setup(){
-    mic = new p5.AudioIn();
-    mic.start();
-    my_analysis = new Analysis(band, 20);
-    my_analysis.display_setup(canvas_width, canvas_height, mic);
-}
+        let canvas_width = 800;
+        let canvas_height = 600;
+        let mic;
 
-function draw(){
-    background(0);
+        let band = 3;
 
+        p5js.setup = function() {
 
-    bpm = my_analysis.analyze();
+            mic = new p5.AudioIn();
+            mic.start();
+            my_analysis = new Analysis(band, 20);
+            my_analysis.display_setup(canvas_width, canvas_height, mic, p5js);
 
-    my_analysis.display_spectrum();
-    my_analysis.display_band_signal();
-    my_analysis.display_threshold();
+        }
 
+        p5js.draw = function() {
 
-    text('click to play/pause', 4, 10);
+            p5js.background(0);
 
-    text('BPM: ' + bpm, 4, 20);
+            bpm = my_analysis.analyze();
 
-    text('band: ' + band, 4, 30);
+            my_analysis.display_spectrum(p5js);
+            my_analysis.display_band_signal(p5js);
+            my_analysis.display_threshold(p5js);
+
+            p5js.text('click to play/pause', 4, 10);
+            p5js.text('BPM: ' + bpm, 4, 20);
+            p5js.text('band: ' + band, 4, 30);
+
+        }
+
+    }
+
+    var myp5 = new p5(fft_sketch);
+
 }

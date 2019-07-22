@@ -206,7 +206,11 @@ class Square{
         this.color = color;
     }
 
-    display(){
+    display(p5js){
+        /*
+        Input:
+            -p5js   p5.js instance
+        */
 
         let corners = [
             [-this.side/2, -this.side/2],
@@ -220,12 +224,12 @@ class Square{
             corners[i] = point_translation(corners[i], this.center)
         }
 
-        stroke(this.color);
+        p5js.stroke(this.color);
 
-        line(corners[0][0], corners[0][1], corners[1][0], corners[1][1]);
-        line(corners[1][0], corners[1][1], corners[2][0], corners[2][1]);
-        line(corners[2][0], corners[2][1], corners[3][0], corners[3][1]);
-        line(corners[3][0], corners[3][1], corners[0][0], corners[0][1]);
+        p5js.line(corners[0][0], corners[0][1], corners[1][0], corners[1][1]);
+        p5js.line(corners[1][0], corners[1][1], corners[2][0], corners[2][1]);
+        p5js.line(corners[2][0], corners[2][1], corners[3][0], corners[3][1]);
+        p5js.line(corners[3][0], corners[3][1], corners[0][0], corners[0][1]);
     }
 
 }
