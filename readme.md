@@ -1,7 +1,7 @@
 # Corridor
 
 This is a p5.js tryout sketch, displaying a moving corridor made of frames
-following random trajectories.
+following random trajectories. Try it on [thibautvoirand.com/corridor](http://thibautvoirand.com/corridor/).
 
 The goal is to link the corridor dynamically with audio input.
 
